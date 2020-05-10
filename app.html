@@ -3,9 +3,14 @@
     <link rel="stylesheet" href="http://windows93.net/c/sys/skins/w93.css?v=2.3.8">
   </head>
   <body style="margin: 0; font-size: 12px">
-    <div style="width: 484px; height: 740px; background-color: #AAAAAA;">
+    <div style="width: 484px; height: 640px; background-color: #AAAAAA;">
+      <div style="background-color: #CCCCCC;">
+        <button id="save" style="border: 1px inset; margin: 0">SAVE</button>
+        <button id="open" style="border: 1px inset; margin: 0">OPEN</button>
+        <button id="clear" style="border: 1px inset; margin: 0">CLEAR</button>
+      </div>
       <canvas width="480" height="480" style="width: 480px; height: 480px; border: 2px inset;" id="voxelscreen"></canvas>
-      <div style="overflow-y: auto; width: 480px; height: 250px; margin-top: 2px; border: 2px inset;">
+      <div style="overflow-y: auto; width: 480px; height: 125px; margin-top: 2px; border: 2px inset;">
         <div>
           <span> FOV: </span> <input type="range" max="120" value="90" id="fov" style="width: 360px; position: absolute; left: 100px;">
         </div>
@@ -16,25 +21,23 @@
           <span> Y-POS: </span> <input type="range" max="16" value="0" id="ypos" style="width: 360px; position: absolute; left: 100px;">
         </div>
         <div></div>
-        <hr>
-        <div>
-          <span> RGB sliders for tile color: [</span><span id="show_color" style="font-weight: 1000; background-color: #0000ff; width: 10px;">&#160;&#160;&#160;&#160;</span><span>]</span>
-        </div>
-        <div>
-          <span> Red: </span> <input type="range" max="255" value="0" id="red" style="width: 360px; position: absolute; left: 100px;">
-        </div>
-        <div>
-          <span> Green: </span> <input type="range" max="255" value="0" id="green" style="width: 360px; position: absolute; left: 100px;">
-        </div>
-        <div>
-          <span> Blue: </span> <input type="range" max="255" value="255" id="blue" style="width: 360px; position: absolute; left: 100px;">
-        </div>
-        <hr>
-        <div>
-          <button id="save" style="width: calc(100% - 10px); margin-left: 5px; border: 2px outset; outline: none;">SAVE</button>
-          <button id="open" style="width: calc(100% - 10px); margin-left: 5px; border: 2px outset; outline: none;">OPEN</button>
-          <button id="clear" style="width: calc(100% - 10px); margin-left: 5px; border: 2px outset; outline: none;">CLEAR</button>
-        </div>
+        <hr><center>
+        	<button onclick="tile_color3d=getColor('#000000')" style="background-color: #000000">&#160;&#160;&#160;&#160;</button>
+        	<button onclick="tile_color3d=getColor('#0000FF')" style="background-color: #0000FF">&#160;&#160;&#160;&#160;</button>
+        	<button onclick="tile_color3d=getColor('#00FF00')" style="background-color: #00FF00">&#160;&#160;&#160;&#160;</button>
+        	<button onclick="tile_color3d=getColor('#00FFFF')" style="background-color: #00FFFF">&#160;&#160;&#160;&#160;</button>
+        	<button onclick="tile_color3d=getColor('#FF0000')" style="background-color: #FF0000">&#160;&#160;&#160;&#160;</button>
+        	<button onclick="tile_color3d=getColor('#FF00FF')" style="background-color: #FF00FF">&#160;&#160;&#160;&#160;</button>
+        	<button onclick="tile_color3d=getColor('#FFFF00')" style="background-color: #FFFF00">&#160;&#160;&#160;&#160;</button>
+        	<button onclick="tile_color3d=getColor('#FFFFFF')" style="background-color: #FFFFFF">&#160;&#160;&#160;&#160;</button>
+        	<button onclick="tile_color3d=getColor('#000088')" style="background-color: #000088">&#160;&#160;&#160;&#160;</button>
+        	<button onclick="tile_color3d=getColor('#008800')" style="background-color: #008800">&#160;&#160;&#160;&#160;</button>
+        	<button onclick="tile_color3d=getColor('#008888')" style="background-color: #008888">&#160;&#160;&#160;&#160;</button>
+        	<button onclick="tile_color3d=getColor('#880000')" style="background-color: #880000">&#160;&#160;&#160;&#160;</button>
+        	<button onclick="tile_color3d=getColor('#880088')" style="background-color: #880088">&#160;&#160;&#160;&#160;</button>
+        	<button onclick="tile_color3d=getColor('#888800')" style="background-color: #888800">&#160;&#160;&#160;&#160;</button>
+        	<button onclick="tile_color3d=getColor('#888888')" style="background-color: #888888">&#160;&#160;&#160;&#160;</button>
+        </center><hr>
       </div>
     </div>
     <script name="engine">
@@ -480,35 +483,7 @@
     <script name="app">
       setInterval(update3DB, 10);
       loadMap(map);
-
-      var sc = document.getElementById('show_color');
-
-      var rgbcol = [0, 0, 255];
-
-      document.getElementById('red').oninput = function(e) {
-
-        rgbcol[0] = Number(e.target.value);
-
-        tile_color3d = tile_color3d & ~(255 << 16) | (rgbcol[0] << 16);
-
-        sc.style.backgroundColor = 'rgb(' + rgbcol.join(', ') + ')';
-      }
-      document.getElementById('green').oninput = function(e) {
-
-        rgbcol[1] = Number(e.target.value);
-
-        tile_color3d = tile_color3d & ~(255 << 8) | (rgbcol[1] << 8);
-
-        sc.style.backgroundColor = 'rgb(' + rgbcol.join(', ') + ')';
-      }
-      document.getElementById('blue').oninput = function(e) {
-
-        rgbcol[2] = Number(e.target.value);
-
-        tile_color3d = tile_color3d & ~255 | rgbcol[2];
-
-        sc.style.backgroundColor = 'rgb(' + rgbcol.join(', ') + ')';
-      }
+      
       document.getElementById('fov').oninput = function(e) {
 
         camera.setFov(Number(e.target.value));
@@ -553,10 +528,6 @@
 	      for(var i = 0; i < 16; i++) for(var j = 0; j < 16; j++) map[getPos(i, 0, j)] = 255 << 8;
           loadMap(map);
       }
-      
-      parent.$window.current.changeSize({width: 486, height: 742});
-      parent.$window.current.changeTitle("3D Builder");
-      parent.$window.current.changeIcon("/c/files/images/icons/bomb.png");
     </script>
   </body>
 </html>
