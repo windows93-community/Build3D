@@ -11,6 +11,7 @@
         <span style="color: gray">&#160;&#160;&#160;</span>
         <button id="plain" style="border: 1px inset; margin: 0">PLAIN</button>
         <button id="void" style="border: 1px inset; margin: 0">THE VOID</button>
+        <button id="color" style="border: 1px inset; margin: 0">COLOR HACKER</button>
       </div>
       <canvas width="480" height="480" style="width: 480px; height: 480px; border: 2px inset;" id="voxelscreen"></canvas>
       <div style="overflow-y: auto; width: 480px; height: 125px; margin-top: 2px; border: 2px inset;">
@@ -529,6 +530,12 @@
       	  for(var i = 0; i < 32768; i++) map[i] = EMPTY;
 	      for(var i = 8; i < 10; i++) for(var j = 8; j < 10; j++) map[getPos(i, 0, j)] = 255 << 8;
           loadMap(map);
+      }
+      document.getElementById('color').onclick = function() {
+      
+      	  parent.$prompt("Enter color code below, if you don't know what you're doing click cancel", function(ok, text) {
+            if(ok) try { tile_color3d = getColor(text); } catch(er) { parent.$alert.error("You didn't know what you were doing!") }
+          });
       }
       document.getElementById('help').onclick = _=>parent.$alert("Help page: https://github.com/windows93-community/Build3D/blob/master/help.md");
     </script>
