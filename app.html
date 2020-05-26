@@ -510,6 +510,21 @@
       setInterval(update3DB, 10);
       loadMap(map);
       
+      var conf = {};
+      
+      parent.$db.getRaw('etc/3DBuilder/config', function(idk, data) {
+        if(typeof data == "string") {
+          conf = JSON.parse(data);
+          document.getElementById('mouse').value = MOUSE_SENSITIVITY = conf.mouse;
+        } else {
+          conf = {mouse: 10};
+        }
+      });
+      
+      function update_config() {
+        parent.$db.set('etc/3DBuilder/config', JSON.stringify(conf));
+      }
+      
       document.getElementById('dist').oninput = function(e) {
 
         camera.dist = Number(e.target.value);
@@ -520,7 +535,7 @@
       }
       document.getElementById('mouse').oninput = function(e) {
 
-        MOUSE_SENSITIVITY = Number(e.target.value);
+        conf.mouse = MOUSE_SENSITIVITY = Number(e.target.value); update_config();
       }
 
       document.getElementById('save').onclick = function() {
@@ -566,7 +581,7 @@
             if(ok) try { tile_color3d = getColor(text); } catch(er) { parent.$alert.error("You didn't know what you were doing!") }
           });
       }
-      document.getElementById('help').onclick = _=>parent.$alert("Help page: https://github.com/windows93-community/Build3D/blob/master/help.md");
+      document.getElementById('help').onclick = _=>parent.$alert('<a href="https://github.com/windows93-community/Build3D/blob/master/help.md"> Help page on github </a>');
     </script>
   </body>
 </html>
