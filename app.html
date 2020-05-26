@@ -2,7 +2,60 @@
   <head>
     <!-- I've encountered some problems with loading CSS from raw githack so I'll just leave it like this for a short period of time -->
     <style>
-      body{margin:0;font-size:12px}.headbut{background-color:#ccc;outline:0;text-decoration:none;font-size:8;padding:5px;height:16px;margin-left:0}.headbut:hover{background-color:#04f;color:FFF}.slidsetting{position:absolute;left:100px}.slid_container{margin-top:5px}.setting_container{overflow-y:auto;overflow-x:hidden;width:480px;height:125px;margin-top:2px;margin-left:4px}.opt_container{background-color:#ccc;height:20px}.body_container{width:484px;height:640px;background-color:#aaa;margin:0}#voxelscreen{width:480px;height:480px;border:2px inset}
+      body {
+        margin: 0;
+        font-size: 12px;
+      }
+
+      .headbut {
+        background-color: #CCC;
+        outline: none;
+        text-decoration: none;
+        font-size: 8;
+        padding: 5px;
+        height: 16px;
+        margin-left: 0;
+      }
+
+      .headbut:hover { background-color: #04F; color: FFF }
+
+      .slidsetting {
+        position: absolute;
+        left: 100px;
+      }
+
+      .slid_container {
+        margin-top: 5px;
+      }
+
+      .setting_container {
+        overflow-y: auto;
+        overflow-x: hidden;
+        width: 476px;
+        height: 205px;
+        margin-top: 2px;
+        margin-left: 4px;
+      }
+
+      .opt_container {
+        background-color: #CCCCCC;
+        height: 16px;
+      }
+
+      .body_container {
+        width: 484px;
+        height: 720px;
+        background-color: #AAAAAA;
+        margin: 0;
+        border: none;
+        padding: -5px
+      }
+
+      #voxelscreen {
+        width: 480px;
+        height: 480px;
+        border: 2px inset;
+      }
     </style>
     <link rel="stylesheet" href="http://windows93.net/c/sys/skins/w93.css?v=2.3.8">
   </head>
@@ -36,10 +89,10 @@
           <div id="colors">
         </div>
         </center>
-        <hr>
       </div>
     </div>
     <script src="https://rawcdn.githack.com/windows93-community/Build3D/6341b02a832898617bfca2a5a3e37917e34450ef/engine.js"></script>
+    <script src="https://rawcdn.githack.com/windows93-community/Build3D/88fd80c4d8ce87e1b13c13b0a01eae575c6c8879/colors.js"></script>
     <script src="https://rawcdn.githack.com/windows93-community/Build3D/6341b02a832898617bfca2a5a3e37917e34450ef/main.js"></script>
     <script src="https://rawcdn.githack.com/windows93-community/Build3D/6341b02a832898617bfca2a5a3e37917e34450ef/app.js"></script>
     <script>
@@ -49,7 +102,7 @@
         var color = namecolor[i];
         var el = document.createElement('button');
         el.style.backgroundColor = color;
-        el.onclick = 'tile_color3d = getColor("color")';
+        el.onclick = eval('_=> tile_color3d = getColor("' + color + '")');
         el.innerHTML = "&#160;".repeat(1);
         colors_div.appendChild(el);
       }
