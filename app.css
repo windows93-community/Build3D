@@ -16,9 +16,12 @@ body {
 .headbut:hover { background-color: #04F; color: FFF }
 
 .slidsetting {
-  width: 360px;
   position: absolute;
   left: 100px;
+}
+
+.slid_container {
+  padding-top: 5px;
 }
 
 .setting_container {
