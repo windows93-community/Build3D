@@ -1,587 +1,62 @@
 <html>
   <head>
-    <style>
-      .headbut {
-        background-color: #CCC;
-        outline: none;
-        text-decoration: none;
-        font-size: 8;
-        padding: 5px;
-        height: 16px;
-        margin-left: 0;
-      }
-      
-      .headbut:hover { background-color: #04F; color: FFF }
-    </style>
+    <link rel="stylesheet" href="https://github.com/windows93-community/Build3D/app.css">
     <link rel="stylesheet" href="http://windows93.net/c/sys/skins/w93.css?v=2.3.8">
   </head>
-  <body style="margin: 0; font-size: 12px;">
-    <div style="width: 484px; height: 640px; background-color: #AAAAAA; margin: 0; padding: -5px">
-      <div style="background-color: #CCCCCC; height: 20px;">
+  <body>
+    <div class="body_container">
+      <div class="opt_container">
         <span id="save" class="headbut">SAVE</span>
         <span id="open" class="headbut">OPEN</span>
         <span id="help" class="headbut">HELP</span>
+
         <span style="color: gray">&#160;&#160;&#160;</span>
+
         <span id="plain" class="headbut">PLAIN</span>
         <span id="void" class="headbut">THE VOID</span>
         <span id="color" class="headbut">COLOR HACKER</span>
       </div>
-      <canvas width="480" height="480" style="width: 480px; height: 480px; border: 2px inset;" id="voxelscreen"></canvas>
-      <div style="overflow-y: auto; width: 480px; height: 125px; margin-top: 2px; margin-left: 4px">
+      <canvas width="480" height="480" id="voxelscreen"></canvas>
+      <div class="setting_container">
         <div>
-          <span> DIST: </span> <input type="range" max="6" value="2" step="0.1" id="dist" style="width: 360px; position: absolute; left: 100px;">
+          <span> DIST: </span> <input type="range" max="6" value="2" step="0.1" id="dist" class="slidsetting">
         </div>
         <div>
-          <span> Y-POS: </span> <input type="range" max="16" value="0" id="ypos" style="width: 360px; position: absolute; left: 100px;">
+          <span> Y-POS: </span> <input type="range" max="16" value="0" id="ypos" class="slidsetting">
         </div>
         <div>
-          <span> MOUSE: </span> <input type="range" max="30" value="10" id="mouse" style="width: 360px; position: absolute; left: 100px;">
+          <span> MOUSE: </span> <input type="range" max="30" value="10" id="mouse" class="slidsetting">
         </div>
-        <div></div>
-        <hr><center>
-        	<button onclick="tile_color3d=getColor('#000000')" style="background-color: #000000">&#160;&#160;&#160;&#160;</button>
-        	<button onclick="tile_color3d=getColor('#0000FF')" style="background-color: #0000FF">&#160;&#160;&#160;&#160;</button>
-        	<button onclick="tile_color3d=getColor('#00FF00')" style="background-color: #00FF00">&#160;&#160;&#160;&#160;</button>
-        	<button onclick="tile_color3d=getColor('#00FFFF')" style="background-color: #00FFFF">&#160;&#160;&#160;&#160;</button>
-        	<button onclick="tile_color3d=getColor('#FF0000')" style="background-color: #FF0000">&#160;&#160;&#160;&#160;</button>
-        	<button onclick="tile_color3d=getColor('#FF00FF')" style="background-color: #FF00FF">&#160;&#160;&#160;&#160;</button>
-        	<button onclick="tile_color3d=getColor('#FFFF00')" style="background-color: #FFFF00">&#160;&#160;&#160;&#160;</button>
-        	<button onclick="tile_color3d=getColor('#FFFFFF')" style="background-color: #FFFFFF">&#160;&#160;&#160;&#160;</button>
-        	<button onclick="tile_color3d=getColor('#000088')" style="background-color: #000088">&#160;&#160;&#160;&#160;</button>
-        	<button onclick="tile_color3d=getColor('#008800')" style="background-color: #008800">&#160;&#160;&#160;&#160;</button>
-        	<button onclick="tile_color3d=getColor('#008888')" style="background-color: #008888">&#160;&#160;&#160;&#160;</button>
-        	<button onclick="tile_color3d=getColor('#880000')" style="background-color: #880000">&#160;&#160;&#160;&#160;</button>
-        	<button onclick="tile_color3d=getColor('#880088')" style="background-color: #880088">&#160;&#160;&#160;&#160;</button>
-        	<button onclick="tile_color3d=getColor('#888800')" style="background-color: #888800">&#160;&#160;&#160;&#160;</button>
-        	<button onclick="tile_color3d=getColor('#888888')" style="background-color: #888888">&#160;&#160;&#160;&#160;</button>
-        </center><hr>
+        <hr>
+        <center>
+          <div id="colors">
+        </div>
+        </center>
+        <hr>
       </div>
     </div>
-    <script name="engine">
-      /* >>> F A X M A C H I N E <<< */
+    <script src="https://github.com/windows93-community/Build3D/engine.js"></script>
+    <script src="https://github.com/windows93-community/Build3D/main.js"></script>
+    <script src="https://github.com/windows93-community/Build3D/app.js"></script>
+    <script>
+      var colors_div = document.getElementById('colors');
 
-      const WIDTH = 480, HEIGHT = 480;
-
-      var canvas = document.getElementById('voxelscreen');
-      var ofscr =  document.createElement('canvas');
-      var ctx = canvas.getContext('2d');
-      var ofc = ofscr.getContext('2d');
-
-      ctx.imageSmoothingEnabled = false;
-      //ctx.scale(2, 2);
-
-      ofscr.width = WIDTH;
-      ofscr.height = HEIGHT;
-
-      /* function for drawing 4-sided polygons */
-
-      function drawpoly(p1, p2, p4, p3, color) {
-        ofc.fillStyle = color;
-        ofc.beginPath();
-        ofc.moveTo(p1.x, p1.y);
-        ofc.lineTo(p3.x, p3.y);
-        ofc.lineTo(p4.x, p4.y);
-        ofc.lineTo(p2.x, p2.y);
-        ofc.closePath();
-        ofc.fill();
-        ofc.beginPath();
-        ofc.moveTo(p1.x, p1.y);
-        ofc.lineTo(p3.x, p3.y);
-        ofc.moveTo(p3.x, p3.y);
-        ofc.lineTo(p4.x, p4.y);
-        ofc.moveTo(p4.x, p4.y);
-        ofc.lineTo(p2.x, p2.y);
-        ofc.moveTo(p2.x, p2.y);
-        ofc.lineTo(p1.x, p1.y);
-        ofc.closePath();
-        ofc.stroke();
+      for(var i = 0; i < 8; i++) {
+        var color = '#' + (((i >> 2) & 1) ? 'FF' : '00') + (((i >> 1) & 1) ? 'FF' : '00') + ((i & 1) ? 'FF' : '00');
+        var el = document.createElement('button');
+        el.style.backgroundColor = color;
+        el.onclick = _=> tile_color3d = getColor(color);
+        el.innerText = " ".repeat(4);
+        colors_div.appendChild(el);
       }
-
-      class Point2D {
-
-        constructor(x, y) {
-
-          this.x = x;
-          this.y = y;
-        }
+      for(var i = 0; i < 8; i++) {
+        var color = '#' + (((i >> 2) & 1) ? '88' : '00') + (((i >> 1) & 1) ? '88' : '00') + ((i & 1) ? '88' : '00');
+        var el = document.createElement('button');
+        el.style.backgroundColor = color;
+        el.onclick = _=> tile_color3d = getColor(color);
+        el.innerText = " ".repeat(4);
+        colors_div.appendChild(el);
       }
-
-      class Point3D {
-
-        constructor(x, y, z) {
-
-          this.x = x;
-          this.y = y;
-          this.z = z;
-        }
-      }
-
-      class Plain {
-
-        constructor(p1, p2, p3, p4, color, pos1, pos2) {
-
-          this.p = [p1, p2, p3, p4];
-
-          this.color = color;
-
-          this.pos1 = pos1;
-
-          this.pos2  = pos2;
-        }
-      }
-
-      function rotate(x, y, angle) {
-
-        return [x * angle.cos - y * angle.sin, x * angle.sin + y * angle.cos];
-      }
-
-      function rotate3d(x, y, z, lr, ud) {
-
-        [x, z] = rotate(x, z, lr);
-
-        [y, z] = rotate(y, z, ud);
-
-        return [x, y, z];
-      }
-
-      /*
-
-      new Camera( <Number = field of view> ) returns Camera
-
-      Camera.rotate( <Number = left-right rotation>, <Number = up-down rotation> ) returns void
-
-      Camera.project( <Point3D> ) returns Point2D
-
-      Camera.setFov( <Number = field of view> )
-
-      */
-
-      class Camera {
-
-        constructor(fov, dist) {
-
-          this.csz = 0.6 / 8;
-          this.top = 0;
-
-          this.rotLR = {val: 0, sin: 0, cos: 1};
-          this.rotUD = {val: 0, sin: 0, cos: 1};
-
-          this.dist = dist;
-          this.fov_ctg = 1 / Math.tan(fov * Math.PI / 360);
-        }
-
-        rotate(xz, yz) {
-
-          this.rotLR.val -= xz;
-          this.rotUD.val -= yz;
-
-          this.rotLR.sin = Math.sin(this.rotLR.val);
-          this.rotLR.cos = Math.cos(this.rotLR.val);
-          this.rotUD.sin = Math.sin(this.rotUD.val);
-          this.rotUD.cos = Math.cos(this.rotUD.val);
-        }
-
-        setFov(fov) {
-
-          this.fov_ctg = 1 / Math.tan(fov * Math.PI / 360);
-        }
-
-        project(p3d) {
-
-          var x = (p3d.x - 8) * this.csz;
-          var y = (this.top - p3d.y) * this.csz;
-          var z = (p3d.z - 8) * this.csz;
-
-          [x, y, z] = rotate3d(x, y, z, this.rotLR, this.rotUD);
-
-          z += this.dist;
-
-          var d = this.fov_ctg / z;
-
-          return new Point2D(WIDTH * (0.5 + x * d), HEIGHT * (0.5 + y * d));
-        }
-
-        getDist(p3d) {
-
-          var x = (p3d.x - 8) * this.csz;
-          var y = (this.top - p3d.y) * this.csz;
-          var z = (p3d.z - 8) * this.csz;
-
-          [x, y, z] = rotate3d(x, y, z, this.rotLR, this.rotUD);
-
-          z += this.dist;
-
-          return x * x + y * y + z * z;
-        }
-      }
-    </script>
-    <script name="main">
-    	/* constants */
-
-      const EMPTY = (1 << 15);
-
-      /* get position number in map */
-
-      function getPos(x, y, z) {
-
-        return (x << 8) | (y << 4) | z;
-      }
-
-      /* get color number */
-
-      function getColor(s) {
-
-        return (Number('0x' + s.substr(1, 2)) << 16) | (Number('0x' + s.substr(3, 2)) << 8) | Number('0x' + s.substr(5, 2));
-      }
-
-      /* get square of distance of a side of square from camera */
-
-      function dist(cam, pli) {
-
-        var ma = 0;
-
-        for(var i in pli.p) {
-
-          ma = Math.max(ma, camera.getDist(pli.p[i]));
-        }
-
-        return ma;
-      }
-
-      /* check if point is inside a polygon */
-
-      function inside(point, poly) {
-
-          var x = point.x, y = point.y;
-
-          var vs = poly.p;
-
-          var inside = false;
-          for (var i = 0, j = vs.length - 1; i < vs.length; j = i++) {
-              var xi = vs[i].x, yi = vs[i].y;
-              var xj = vs[j].x, yj = vs[j].y;
-
-              var intersect = ((yi > y) != (yj > y))
-                  && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
-              if (intersect) inside = !inside;
-          }
-
-          return inside;
-      };
-
-      var camera = new Camera(90, 2); // Camera object
-
-      camera.rotate(-Math.PI * 0.25, -Math.PI * 0.25);
-
-      /* map for testing, this part of code will later be replaced */
-
-      var map = new Uint32Array(4096);
-
-      for(var i = 0; i < 32768; i++) map[i] = EMPTY;
-
-      for(var i = 0; i < 16; i++) for(var j = 0; j < 16; j++) map[getPos(i, 0, j)] = 255 << 8;
-
-      /* render */
-
-      var plains3D = [], projections = [];
-
-      /* check if place in the map is empty */
-
-      function isEmpty(x, y, z) {
-
-        return x < 0 || y < 0 || z < 0 || x > 15 || y > 15 || z > 15 || map[getPos(x, y, z)] == EMPTY;
-      }
-
-      /* left pad */
-
-      String.prototype.lpad = function(n, c) {
-
-        s = '';
-
-        for(var i = 0; i < Math.max(n - this.length, 0); i++) {
-
-          s += '0';
-        }
-
-        return s + this;
-      }
-
-      /* function for loading a 3bm (bitmap format for 93D ) */
-
-      function loadMap(map) {
-
-        plains3D = [];
-
-        for(var x = 0; x < 16; x++) {
-          for(var y = 0; y < 16; y++) {
-            for(var z = 0; z < 16; z++) {
-              if(map[getPos(x, y, z)] != EMPTY) {
-
-                var color = '#' + ((map[getPos(x, y, z)] >> 16) & 255).toString(16).lpad(2, '0') +
-                                  ((map[getPos(x, y, z)] >> 8) & 255).toString(16).lpad(2, '0') +
-                                  (map[getPos(x, y, z)] & 255).toString(16).lpad(2, '0');
-
-                if(isEmpty(x + 1, y, z)) plains3D.push(new Plain(
-
-                  new Point3D(x + 1, y + 1, z + 1),
-                  new Point3D(x + 1, y + 1, z),
-                  new Point3D(x + 1, y, z),
-                  new Point3D(x + 1, y, z + 1),
-
-                  color, new Point3D(x, y, z), new Point3D(x + 1, y, z)
-                ));
-                if(isEmpty(x, y - 1, z)) plains3D.push(new Plain(
-
-                  new Point3D(x, y, z),
-                  new Point3D(x, y, z + 1),
-                  new Point3D(x + 1, y, z + 1),
-                  new Point3D(x + 1, y, z),
-
-                  color, new Point3D(x, y, z), new Point3D(x, y - 1, z)
-                ));
-                if(isEmpty(x, y, z + 1)) plains3D.push(new Plain(
-
-                  new Point3D(x, y + 1, z + 1),
-                  new Point3D(x + 1, y + 1, z + 1),
-                  new Point3D(x + 1, y, z + 1),
-                  new Point3D(x, y, z + 1),
-
-                  color, new Point3D(x, y, z), new Point3D(x, y, z + 1)
-                ));
-                if(isEmpty(x - 1, y, z)) plains3D.push(new Plain(
-
-                  new Point3D(x, y, z),
-                  new Point3D(x, y, z + 1),
-                  new Point3D(x, y + 1, z + 1),
-                  new Point3D(x, y + 1, z),
-
-                  color, new Point3D(x, y, z), new Point3D(x - 1, y, z)
-                ));
-                if(isEmpty(x, y + 1, z)) plains3D.push(new Plain(
-
-                  new Point3D(x, y + 1, z),
-                  new Point3D(x + 1, y + 1, z),
-                  new Point3D(x + 1, y + 1, z + 1),
-                  new Point3D(x, y + 1, z + 1),
-
-                  color, new Point3D(x, y, z), new Point3D(x, y + 1, z)
-                ));
-                if(isEmpty(x, y, z - 1)) plains3D.push(new Plain(
-
-                  new Point3D(x, y, z),
-                  new Point3D(x + 1, y, z),
-                  new Point3D(x + 1, y + 1, z),
-                  new Point3D(x, y + 1, z),
-
-                  color, new Point3D(x, y, z), new Point3D(x, y, z - 1)
-                ));
-              }
-            }
-          }
-        }
-      }
-
-      /* MOUSE SENSITIVITY */
-      
-      var MOUSE_SENSITIVITY = 10;
-      
-      /* ---------------- */
-      
-      
-      /* John: I got lost in here. */
-      
-      ctx.fillStyle = '#191970';
-
-      /* function for rendering screen */
-
-      function render() {
-
-        projections = [];
-
-        ctx.clearRect(0, 0, WIDTH, HEIGHT);
-        ofc.clearRect(0, 0, WIDTH, HEIGHT);
-
-        plains3D.sort((a, b) => dist(camera, b) - dist(camera, a));
-
-        for(var i = 0; i < plains3D.length; i++) {
-
-          drawpoly(...plains3D[i].p.map(x => camera.project(x)), plains3D[i].color);
-
-          projections.push(new Plain(...plains3D[i].p.map(x => camera.project(x)), dist(camera, plains3D[i]), plains3D[i].pos1, plains3D[i].pos2));
-        }
-
-        ctx.fillRect(0, 0, WIDTH, HEIGHT);
-
-        ctx.drawImage(ofscr, 0, 0);
-      }
-
-      var tile_color3d = 255; // color of tiles to be placed
-
-      var key = {};
-      var mouse = {left: false, right: false, x: 0, y: 0, count: 0};
-
-      var update3DB = function() {
-
-        /* rotation stuff */
-
-        if(key[87]) camera.rotate(0, -Math.PI / 90);
-        if(key[83]) camera.rotate(0, Math.PI / 90);
-        if(key[68]) camera.rotate(-Math.PI / 90, 0);
-        if(key[65]) camera.rotate(Math.PI / 90, 0);
-
-        /* mouse stuff */
-
-        if((mouse.left || mouse.right) && !mouse.count) {
-
-          var pos1 = -1, pos2 = -1, di = 1e9; // pos1 = position of current block, pos2 = position of block this side is facing towards
-
-          for(var i = 0; i < projections.length; i++) {
-
-            if(inside(mouse, projections[i]) && projections[i].color < di) {
-
-              di = projections[i].color; // color acts as distance here (don't ask why, there's no good answer)
-
-              pos1 = projections[i].pos1;
-              pos2 = projections[i].pos2;
-            }
-          }
-
-          if(pos1 != -1) {
-
-            if(mouse.left) map[getPos(pos2.x, pos2.y, pos2.z)] = tile_color3d;
-            if(mouse.right) map[getPos(pos1.x, pos1.y, pos1.z)] = EMPTY;
-
-            mouse.count = MOUSE_SENSITIVITY; // mouse count prevents unintentional actions by disabling placing and destroying for 50 ms
-
-            loadMap(map);
-          }
-        }
-
-        if(mouse.count) mouse.count--;
-
-        render();
-      }
-
-      var cbr;
-
-      /* event listeners */
-      document.addEventListener('keydown', e => key[e.keyCode] = true);
-      document.addEventListener('keyup',  e => key[e.keyCode] = false);
-      canvas.addEventListener('mouseup', e => {
-        if(!e.button) mouse.left = false;
-        else mouse.right = false;
-        return false;
-      });
-      canvas.addEventListener('mousedown', e => {
-        if(mouse.x < cbr.left || mouse.x > cbr.right || mouse.y < cbr.top || mouse.y > cbr.bottom) return;
-        if(!e.button) mouse.left = true;
-        else mouse.right = true;
-      });
-      canvas.addEventListener('mousemove', e => {
-
-        cbr = canvas.getBoundingClientRect(); // for mouse location
-        mouse.x = e.pageX - cbr.left;
-        mouse.y = e.pageY - cbr.top;
-      });
-      canvas.oncontextmenu = e => false; // cause right click is used for destroying blocks
-
-
-      /*
-
-      EXPORTS:
-
-      - update3DB(), use it in setInterval
-      - camera.setFov(angle)
-      - camera.dist = distance from model
-      - camera.top = y-position of the lowest layer of map
-      - loadMap(Uint32Array) = load a map into the editor
-      - tile_color3d - a number representing current fill color
-      - getColor(html color code) - returns a number presenting given color
-
-      IMPORTANT:
-
-      - when program loads, it finds a canvas element with id = "voxelscreen",
-        make sure to have that element somewhere before running program
-
-      */
-
-    </script>
-    <script name="app">
-      setInterval(update3DB, 10);
-      loadMap(map);
-      
-      var conf = {};
-      
-      parent.$db.getRaw('etc/3DBuilder/config', function(idk, data) {
-        if(typeof data == "string") {
-          conf = JSON.parse(data);
-          document.getElementById('mouse').value = MOUSE_SENSITIVITY = conf.mouse;
-        } else {
-          conf = {mouse: 10};
-        }
-      });
-      
-      function update_config() {
-        parent.$db.set('etc/3DBuilder/config', JSON.stringify(conf));
-      }
-      
-      document.getElementById('dist').oninput = function(e) {
-
-        camera.dist = Number(e.target.value);
-      }
-      document.getElementById('ypos').oninput = function(e) {
-
-        camera.top = Number(e.target.value);
-      }
-      document.getElementById('mouse').oninput = function(e) {
-
-        conf.mouse = MOUSE_SENSITIVITY = Number(e.target.value); update_config();
-      }
-
-      document.getElementById('save').onclick = function() {
-      	parent.$prompt("Enter desired filename, then select folder where you want it saved.", function(a, fname) {
-      	  if(!a) return;
-          parent.$explorer('a/etc/3DBuilder/models/', {browse: true, explorer: true, onclose: function(ok, file) {
-            if (ok) {
-              var rd = '';
-              for(var i = 0; i < 4096; i++) rd += String.fromCharCode((map[i] >> 24) & 255) +  String.fromCharCode((map[i] >> 16) & 255) +  String.fromCharCode((map[i] >> 8) & 255) +  String.fromCharCode((map[i]) & 255);
-              parent.$db.set((file + fname).split('/').slice(1).filter(x => x!='').join('/'), rd);
-              setTimeout(parent.$explorer.refresh, 500);
-            }
-          }});
-        });
-      }
-      document.getElementById('open').onclick = function() {
-      	parent.$explorer('a/etc/3DBuilder/models/', {browse: true, explorer: true, onclose: function(ok, file) {
-		  if (ok) {
-    		parent.$db.getRaw(file.slice(3), async function(a, rd) {
-      			for(var i = 0; i < 4096; i++) {
-                   map[i] = (rd.charAt(i * 4) << 24) | (rd.charCodeAt(i * 4 + 1) << 16)  | (rd.charCodeAt(i * 4 + 2) << 8)  | rd.charCodeAt(i * 4 + 3);                           
-                }
-                loadMap(map);                                                                                          
-      		});
-  		  }
-		}});
-      }
-      document.getElementById('plain').onclick = function() {
-      
-      	  for(var i = 0; i < 32768; i++) map[i] = EMPTY;
-	      for(var i = 0; i < 16; i++) for(var j = 0; j < 16; j++) map[getPos(i, 0, j)] = 255 << 8;
-          loadMap(map);
-      }
-      document.getElementById('void').onclick = function() {
-      
-      	  for(var i = 0; i < 32768; i++) map[i] = EMPTY;
-	      for(var i = 8; i < 10; i++) for(var j = 8; j < 10; j++) map[getPos(i, 0, j)] = 255 << 8;
-          loadMap(map);
-      }
-      document.getElementById('color').onclick = function() {
-      
-      	  parent.$prompt("Enter color code below, if you don't know what you're doing click cancel", function(ok, text) {
-            if(ok) try { tile_color3d = getColor(text); } catch(er) { parent.$alert.error("You didn't know what you were doing!") }
-          });
-      }
-      document.getElementById('help').onclick = _=>parent.$alert('<a href="https://github.com/windows93-community/Build3D/blob/master/help.md"> Help page on github </a>');
     </script>
   </body>
 </html>

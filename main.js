@@ -1,14 +1,12 @@
 /* constants */
 
 const EMPTY = (1 << 15);
-const EDGE_L2 = 4;
-const EDGE_M1 = (1 << EDGE_L2) - 1;
 
 /* get position number in map */
 
 function getPos(x, y, z) {
 
-  return (x << (2 * EDGE_L2)) | (y << EDGE_L2) | z;
+  return (x << 8) | (y << 4) | z;
 }
 
 /* get color number */
@@ -59,11 +57,11 @@ camera.rotate(-Math.PI * 0.25, -Math.PI * 0.25);
 
 /* map for testing, this part of code will later be replaced */
 
-var map = new Uint32Array(1 << (3 * EDGE_L2));
+var map = new Uint32Array(4096);
 
 for(var i = 0; i < 32768; i++) map[i] = EMPTY;
 
-for(var i = 0; i < (1 << EDGE_L2); i++) for(var j = 0; j < (1 << EDGE_L2); j++) map[getPos(i, 0, j)] = 255 << 8;
+for(var i = 0; i < 16; i++) for(var j = 0; j < 16; j++) map[getPos(i, 0, j)] = 255 << 8;
 
 /* render */
 
@@ -73,7 +71,7 @@ var plains3D = [], projections = [];
 
 function isEmpty(x, y, z) {
 
-  return x < 0 || y < 0 || z < 0 || x > EDGE_M1 || y > EDGE_M1 || z > EDGE_M1 || map[getPos(x, y, z)] == EMPTY;
+  return x < 0 || y < 0 || z < 0 || x > 15 || y > 15 || z > 15 || map[getPos(x, y, z)] == EMPTY;
 }
 
 /* left pad */
@@ -96,9 +94,9 @@ function loadMap(map) {
 
   plains3D = [];
 
-  for(var x = 0; x < (1 << EDGE_L2); x++) {
-    for(var y = 0; y < (1 << EDGE_L2); y++) {
-      for(var z = 0; z < (1 << EDGE_L2); z++) {
+  for(var x = 0; x < 16; x++) {
+    for(var y = 0; y < 16; y++) {
+      for(var z = 0; z < 16; z++) {
         if(map[getPos(x, y, z)] != EMPTY) {
 
           var color = '#' + ((map[getPos(x, y, z)] >> 16) & 255).toString(16).lpad(2, '0') +
@@ -165,6 +163,15 @@ function loadMap(map) {
   }
 }
 
+/* MOUSE SENSITIVITY */
+
+var MOUSE_SENSITIVITY = 10;
+
+/* ---------------- */
+
+
+/* John: I got lost in here. */
+
 ctx.fillStyle = '#191970';
 
 /* function for rendering screen */
@@ -226,7 +233,7 @@ var update3DB = function() {
       if(mouse.left) map[getPos(pos2.x, pos2.y, pos2.z)] = tile_color3d;
       if(mouse.right) map[getPos(pos1.x, pos1.y, pos1.z)] = EMPTY;
 
-      mouse.count = 10; // mouse count prevents unintentional actions by disabling placing and destroying for 50 ms
+      mouse.count = MOUSE_SENSITIVITY; // mouse count prevents unintentional actions by disabling placing and destroying for 50 ms
 
       loadMap(map);
     }
@@ -242,17 +249,17 @@ var cbr;
 /* event listeners */
 document.addEventListener('keydown', e => key[e.keyCode] = true);
 document.addEventListener('keyup',  e => key[e.keyCode] = false);
-document.addEventListener('mouseup', e => {
+canvas.addEventListener('mouseup', e => {
   if(!e.button) mouse.left = false;
   else mouse.right = false;
   return false;
 });
-document.addEventListener('mousedown', e => {
+canvas.addEventListener('mousedown', e => {
   if(mouse.x < cbr.left || mouse.x > cbr.right || mouse.y < cbr.top || mouse.y > cbr.bottom) return;
   if(!e.button) mouse.left = true;
   else mouse.right = true;
 });
-document.addEventListener('mousemove', e => {
+canvas.addEventListener('mousemove', e => {
 
   cbr = canvas.getBoundingClientRect(); // for mouse location
   mouse.x = e.pageX - cbr.left;

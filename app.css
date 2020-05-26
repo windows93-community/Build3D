@@ -1,0 +1,49 @@
+body {
+  margin: 0;
+  font-size: 12px;
+}
+
+.headbut {
+  background-color: #CCC;
+  outline: none;
+  text-decoration: none;
+  font-size: 8;
+  padding: 5px;
+  height: 16px;
+  margin-left: 0;
+}
+
+.headbut:hover { background-color: #04F; color: FFF }
+
+.slidsetting {
+  width: 360px;
+  position: absolute;
+  left: 100px;
+}
+
+.setting_container {
+  overflow-y: auto;
+  width: 480px;
+  height: 125px;
+  margin-top: 2px;
+  margin-left: 4px;
+}
+
+.opt_container {
+  background-color: #CCCCCC;
+  height: 20px;
+}
+
+.body_container {
+  width: 484px;
+  height: 640px;
+  background-color: #AAAAAA;
+  margin: 0;
+  padding: -5px
+}
+
+#voxelscreen {
+  width: 480px;
+  height: 480px;
+  border: 2px inset;
+}
