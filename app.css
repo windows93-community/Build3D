@@ -23,6 +23,7 @@ body {
 
 .setting_container {
   overflow-y: auto;
+  overflow-x: none;
   width: 480px;
   height: 125px;
   margin-top: 2px;

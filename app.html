@@ -45,16 +45,16 @@
         var color = '#' + (((i >> 2) & 1) ? 'FF' : '00') + (((i >> 1) & 1) ? 'FF' : '00') + ((i & 1) ? 'FF' : '00');
         var el = document.createElement('button');
         el.style.backgroundColor = color;
-        el.onclick = _=> tile_color3d = getColor(color);
-        el.innerText = " ".repeat(4);
+        el.onclick = 'tile_color3d = getColor(color)';
+        el.innerHTML = "&#160;".repeat(4);
         colors_div.appendChild(el);
       }
       for(var i = 0; i < 8; i++) {
         var color = '#' + (((i >> 2) & 1) ? '88' : '00') + (((i >> 1) & 1) ? '88' : '00') + ((i & 1) ? '88' : '00');
         var el = document.createElement('button');
         el.style.backgroundColor = color;
-        el.onclick = _=> tile_color3d = getColor(color);
-        el.innerText = " ".repeat(4);
+        el.onclick = 'tile_color3d = getColor(color)';
+        el.innerHTML = "&#160;".repeat(4);
         colors_div.appendChild(el);
       }
     </script>
