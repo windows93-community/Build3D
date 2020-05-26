@@ -50,8 +50,7 @@
         var color = namecolor[i];
         var el = document.createElement('button');
         el.style.backgroundColor = color;
-        el.style.marginRight = '3px';
-        el.onclick = 'tile_color3d = getColor(color)';
+        el.onclick = 'tile_color3d = getColor("color")';
         el.innerHTML = "&#160;".repeat(1);
         colors_div.appendChild(el);
       }
