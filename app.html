@@ -40,27 +40,19 @@
       </div>
     </div>
     <script src="https://rawcdn.githack.com/windows93-community/Build3D/6341b02a832898617bfca2a5a3e37917e34450ef/engine.js"></script>
+    <script src="https://rawcdn.githack.com/windows93-community/Build3D/6341b02a832898617bfca2a5a3e37917e34450ef/colors.js"></script>
     <script src="https://rawcdn.githack.com/windows93-community/Build3D/6341b02a832898617bfca2a5a3e37917e34450ef/main.js"></script>
     <script src="https://rawcdn.githack.com/windows93-community/Build3D/6341b02a832898617bfca2a5a3e37917e34450ef/app.js"></script>
     <script>
       var colors_div = document.getElementById('colors'); // place color buttons there
 
-      for(var i = 0; i < 8; i++) {
-        var color = '#' + (((i >> 2) & 1) ? 'FF' : '00') + (((i >> 1) & 1) ? 'FF' : '00') + ((i & 1) ? 'FF' : '00'); // get color from i
+      for(var i in namecolor) {
+        var color = namecolor[i];
         var el = document.createElement('button');
         el.style.backgroundColor = color;
         el.style.marginRight = '3px';
         el.onclick = 'tile_color3d = getColor(color)';
-        el.innerHTML = "&#160;".repeat(3);
-        colors_div.appendChild(el);
-      }
-      for(var i = 0; i < 8; i++) {
-        var color = '#' + (((i >> 2) & 1) ? '88' : '00') + (((i >> 1) & 1) ? '88' : '00') + ((i & 1) ? '88' : '00'); // get color from i
-        var el = document.createElement('button');
-        el.style.backgroundColor = color;
-        el.style.marginRight = '3px';
-        el.onclick = 'tile_color3d = getColor(color)';
-        el.innerHTML = "&#160;".repeat(3);
+        el.innerHTML = "&#160;".repeat(1);
         colors_div.appendChild(el);
       }
     </script>
