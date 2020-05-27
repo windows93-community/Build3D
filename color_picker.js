@@ -148,5 +148,5 @@ picker.onchange = function() {
 }
 
 for(var i = 1; i <= 8; i++) {
-  document.getElementById('c' + i).onclick = _=> select_slot(i);
+  document.getElementById('c' + i).onclick = eval('_=> select_slot(' + i + ');');
 }
