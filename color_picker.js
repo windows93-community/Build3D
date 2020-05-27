@@ -130,7 +130,7 @@ document.addEventListener('mousemove', e => {
 
 var selected_slot = 1;
 
-var slot_colors = ['', '#FFFFFF', '#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#00FFFF', '#000000', '#FF00FF']
+var slot_colors = ['', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF'];
 
 function select_slot(s) {
   for(var i = 1; i <= 8; i++) {
