@@ -1,3 +1,40 @@
+function toHSV(r, g, b) {
+    let rabs, gabs, babs, rr, gg, bb, h, s, v, diff, diffc, percentRoundFn;
+    rabs = r / 255;
+    gabs = g / 255;
+    babs = b / 255;
+    v = Math.max(rabs, gabs, babs),
+    diff = v - Math.min(rabs, gabs, babs);
+    diffc = c => (v - c) / 6 / diff + 1 / 2;
+    percentRoundFn = num => Math.round(num * 100) / 100;
+    if (diff == 0) {
+        h = s = 0;
+    } else {
+        s = diff / v;
+        rr = diffc(rabs);
+        gg = diffc(gabs);
+        bb = diffc(babs);
+
+        if (rabs === v) {
+            h = bb - gg;
+        } else if (gabs === v) {
+            h = (1 / 3) + rr - bb;
+        } else if (babs === v) {
+            h = (2 / 3) + gg - rr;
+        }
+        if (h < 0) {
+            h += 1;
+        }else if (h > 1) {
+            h -= 1;
+        }
+    }
+    return {
+        h: Math.round(h * 360),
+        s: percentRoundFn(s * 100),
+        v: percentRoundFn(v * 100)
+    };
+}
+
 var picker = {
 
   mouse: {down: false, x: 0, y: 0},
@@ -23,28 +60,10 @@ var picker = {
   },
 
   setTo(r, g, b) {
-      r /= 255, g /= 255, b /= 255;
-
-    var max = Math.max(r, g, b), min = Math.min(r, g, b);
-    var h, s, v = max;
-
-    var d = max - min;
-    s = max == 0 ? 0 : d / max;
-
-    if (max == min) {
-      h = 0; // achromatic
-    } else {
-      switch (max) {
-        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-        case g: h = (b - r) / d + 2; break;
-        case b: h = (r - g) / d + 4; break;
-      }
-
-      h /= 6;
-    }
-    this.hue = h;
-    this.slx = s;
-    this.sly = v;
+    c = toHSV(r, g, b);
+    this.hue = c.h;
+    this.slx = c.s;
+    this.sly = c.v;
     this.display();
   },
 
@@ -126,4 +145,8 @@ picker.onchange = function() {
   tile_color3d = getColor(picker.color());
   document.getElementById('c' + selected_slot).style.backgroundColor = picker.color();
   slot_colors[selected_slot] = picker.color();
+}
+
+for(var i = 1; i <= 8; i++) {
+  document.getElementById('c' + i).onclick = _=> select_slot(i);
 }
