@@ -14,8 +14,8 @@ function download_resource(theUrl) {
 
 /* create files and folders */
 
-var app_html = await download_resurce();
-var app_init = await download_resource();
+var app_html = await download_resurce("https://raw.githack.com/windows93-community/Build3D/master/app.html");
+var app_init = await download_resource("https://raw.githack.com/windows93-community/Build3D/master/app_init.js");
 
 $db.set("etc/3DBuilder/models/README.txt", "You can save your models here.");
 $db.set("etc/3DBuilder/app.html", app_html);
