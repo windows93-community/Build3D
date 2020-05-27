@@ -125,7 +125,6 @@ document.addEventListener('mousemove', e => {
   picker.mouse.x = e.pageX;
   picker.mouse.y = e.pageY;
   picker.mousemove();
-  e.preventDefault();
 });
 
 var selected_slot = 1;
