@@ -124,5 +124,7 @@ function select_slot(s) {
 }
 
 picker.onchange = function() {
-  tile_color3d = picker.color();
+  tile_color3d = getColor(picker.color());
+  document.getElementById('c' + selected_slot).style.backgroundColor = picker.color();
+  slot_colors[selected_slot] = picker.color();
 }
