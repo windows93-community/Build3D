@@ -66,7 +66,6 @@ var picker = {
         case 4: r = t, g = p, b = v; break;
         case 5: r = v, g = p, b = q; break;
     }
-    return 'rgb(' + Math.round(r * 255) + ',' + Math.round(g * 255) + ',' + Math.round(b * 255) + ')';
     return "#" + ((1 << 24) + (Math.round(r * 255) << 16) + (Math.round(r * 255) << 8) + Math.round(r * 255)).toString(16).slice(1);
   },
 
