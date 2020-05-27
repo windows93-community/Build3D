@@ -22,10 +22,29 @@ var picker = {
     if(typeof this.onchange == 'function') this.onchange(this.hue, this.slx, this.sly);
   },
 
-  setTo(h, s, l) {
+  setTo(r, g, b) {
+      r /= 255, g /= 255, b /= 255;
+
+    var max = Math.max(r, g, b), min = Math.min(r, g, b);
+    var h, s, v = max;
+
+    var d = max - min;
+    s = max == 0 ? 0 : d / max;
+
+    if (max == min) {
+      h = 0; // achromatic
+    } else {
+      switch (max) {
+        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+        case g: h = (b - r) / d + 2; break;
+        case b: h = (r - g) / d + 4; break;
+      }
+
+      h /= 6;
+    }
     this.hue = h;
     this.slx = s;
-    this.sly = l;
+    this.sly = v;
     this.display();
   },
 
@@ -90,3 +109,20 @@ document.addEventListener('mousemove', e => {
   picker.mousemove();
   e.preventDefault();
 });
+
+var selected_slot = 1;
+
+var slot_colors = ['', '#FFFFFF', '#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#00FFFF', '#000000', '#FF00FF']
+
+function select_slot(s) {
+  for(var i = 1; i <= 8; i++) {
+    document.getElementById('c' + i).style.outline = 'none';
+  }
+  document.getElementById('c' + s).style.outline = '1px dashed';
+  selected_slot = s;
+  picker.setTo(Number('0x' + slot_colors[s].substr(1, 2)), Number('0x' + slot_colors[s].substr(3, 2)), Number('0x' + slot_colors[s].substr(5, 2)));
+}
+
+picker.onchange = function() {
+  tile_color3d = picker.color();
+}
