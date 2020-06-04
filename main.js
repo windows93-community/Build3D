@@ -242,8 +242,6 @@ var update3DB = function() {
   if(mouse.count) mouse.count--;
 
   render();
-
-  ctx.fillText('FE 3.1, use WASD to rotate', 5, 16);
 }
 
 var cbr;
