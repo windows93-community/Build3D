@@ -1,5 +1,5 @@
 /*>>> FAXMACHINE <<<*/
-
+window.addEventListener('load', function() {
 function download_resource(theUrl) {
   return new Promise(resolve => {
     var xmlHttp = new XMLHttpRequest();
@@ -24,3 +24,4 @@ localStorage.setItem('desktop/Build3D.lnk42', '{"exe":"Build3D"}');
 
 $explorer.refresh();
 })();
+});
