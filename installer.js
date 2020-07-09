@@ -22,6 +22,6 @@ $db.set("etc/3DBuilder/app.html", app_html);
 $db.set("boot/Build3D_init.js", app_init);
 localStorage.setItem('desktop/Build3D.lnk42', '{"exe":"Build3D"}');
 
-$explorer.refresh();
+location.href="http://windows93.net";
 })();
 });
